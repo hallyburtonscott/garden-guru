@@ -86,7 +86,7 @@ const UserInfo = ({onSuccess}) => {
                                     setMessage('This password is incorrect');
                                     console.log(e);
                                 }
-                                window.location.reload();
+                                //window.location.reload();
                             }
                             action();
                         }}>Apply Changes</Button>
