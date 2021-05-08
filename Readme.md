@@ -1,6 +1,6 @@
 Readme Edit Later
 
- Used Heroku To host my backend with Postgres SQL database (complete with users/passwords and plant connections) 
+ Used Heroku To host my backend with Postgres SQL database (complete with users/passwords and plant connections) \n
  Also use Heroku to host Front End
  React Framework 
  CSS with Material-UI
