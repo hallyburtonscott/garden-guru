@@ -5,7 +5,7 @@ const parse = require('postgres-date');
 
 const SERVERURL = process.env.NODE_ENV === 'production' ? 'https://garden-guru-comp426.herokuapp.com/api' : 'http://localhost:8000';
 
-console.log(window.location.origin);
+//console.log(window.location.origin);
 
 export async function createUser(first, last, email, phone, username, password) {
         const result = await axios({
@@ -78,7 +78,7 @@ export const getPlantByAPI = async (id) =>{
 export const getUserPlantConnections = async (username) => {
     const result = await axios({
         method:'get',
-        url: `http://localhost:8000/plants/${username}`
+        url: `/plants/${username}`
     })
     return result;
 }
@@ -86,7 +86,7 @@ export const getUserPlantConnections = async (username) => {
 export const getUserPlants = async (plantIds) =>{
     const result = await axios({
         method:'post',
-        url: `http://localhost:8000/getPlants`,
+        url: `/getPlants`,
         data: {
             plant_ids: plantIds,
         }
