@@ -10,7 +10,7 @@ console.log(window.location.origin);
 export async function createUser(first, last, email, phone, username, password) {
         const result = await axios({
             method: 'post',
-            url: SERVERURL + '/signup',
+            url: '/signup',
             data: {
                 first: first,
                 last: last,
@@ -26,7 +26,7 @@ export async function createUser(first, last, email, phone, username, password) 
 export const getUsers = async () => {
     const result = await axios({
         method: 'get',
-        url: SERVERURL + '/users',
+        url: '/users',
     })
     return result;
 }
@@ -37,7 +37,7 @@ export const getUser = async (username, password) => {
     //console.log(password);
     const result = await axios({
         method: 'post',
-        url: SERVERURL + `/login`,
+        url: `/login`,
         data: {
             username: username,
             password: password,
@@ -50,7 +50,7 @@ export const updateUserPreferences = async (username, password, preferences) => 
     const {zip, mode} = preferences;
     const result = await axios({
         method: 'put',
-        url: SERVERURL + `/users/${username}`,
+        url: `/users/${username}`,
         data: {
             password: password,
             zip: zip,
@@ -97,7 +97,7 @@ export const getUserPlants = async (plantIds) =>{
 export const createPlantConnection = async (username, attributes) => {
     const result = await axios({
         method: 'put',
-        url: SERVERURL + `/plants/${username}`,
+        url: `/plants/${username}`,
         data: {
             attributes: attributes,
         }
@@ -107,7 +107,7 @@ export const createPlantConnection = async (username, attributes) => {
 export const deleteUserPlant = async (username, id) => {
     const result = await axios({
         method: 'delete',
-        url: SERVERURL + `/plants/${username}`,
+        url: `/plants/${username}`,
         data: {
             id: id,
         }
@@ -118,7 +118,7 @@ export const deleteUserPlant = async (username, id) => {
 export const updatePlantConnection = async (username, plantId, timestamp) =>{
     const result = await axios({
         method: 'post',
-        url: SERVERURL +  `/plants/${username}`,
+        url: `/plants/${username}`,
         data: {
             plant_id: plantId,
             timestamp: timestamp,
@@ -133,7 +133,7 @@ export const getWeather = async (zip) => {
     // }
     const result = await axios({
         method: 'get',
-        url: SERVERURL + `/weather/${zip}`,
+        url: `/weather/${zip}`,
     })
     return result;
 }
@@ -150,7 +150,7 @@ export const getWeather = async (zip) => {
 export const getNews = async(query) => {
     const result = await axios({
         method: 'get',
-        url: SERVERURL +  `/news/${query}`
+        url: `/news/${query}`
     });
 
     return result;
