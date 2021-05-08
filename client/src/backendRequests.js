@@ -3,7 +3,7 @@ require('dotenv').config();
 const parse = require('postgres-date');
 //const SERVERURL = `http://localhost:${process.env.PORT || 8000}`
 
-const SERVERURL = process.env.NODE_ENV === 'production' ? 'https://garden-guru-comp246.herokuapp.com/api' : 'http://localhost:8000';
+const SERVERURL = process.env.NODE_ENV === 'production' ? 'https://garden-guru-comp426.herokuapp.com' : 'http://localhost:8000';
 
 console.log(window.location.origin);
 
