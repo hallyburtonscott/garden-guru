@@ -1,4 +1,4 @@
-Readme Edit Later
+
 
  Used Heroku To host my backend with Postgres SQL database (complete with users/passwords and plant connections) 
  
