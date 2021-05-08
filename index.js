@@ -19,6 +19,7 @@ const User = require('./user.js');
 const Plant = require('./plant.js');
 
 //app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 if (process.env.NODE_ENV === 'production') {
 	app.use(express.static('client/build'));
     app.get('*', (request, response) => {
@@ -33,18 +34,18 @@ User.initialize();
 
 
 /**User related Server Calls */
-app.get('/', function (req, res) {
+app.get('/api/', function (req, res) {
     console.log("GET request for homepage");
     res.send('Hello World from the homepage');
 })
-app.get('/users', (req, res) => {
+app.get('/api/users', (req, res) => {
     //res.send('Accesing user data');
     User.findAll().then(result => {
         //console.log(result);
         res.send(JSON.stringify(result));
     });
 })
-app.get('/user', async (req, res) => {
+app.get('/api/user', async (req, res) => {
     try {
         const userInfo = await User.find(req.user['username']);
         res.json(userInfo)
@@ -55,7 +56,7 @@ app.get('/user', async (req, res) => {
 })
 
 
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     try {
         //console.log(req.params);
         //console.log('the login worked???');
@@ -87,7 +88,7 @@ app.post('/login', async (req, res) => {
 
 })
 
-app.post('/signup', async (req, res) => {
+app.post('/api/signup', async (req, res) => {
     try {
         const { first, last, email, phone, username, password } = req.body;
         //console.log(req.body);
@@ -107,7 +108,7 @@ app.post('/signup', async (req, res) => {
     }
 })
 
-app.put('/users/:username', async (req, res) => {
+app.put('/api/users/:username', async (req, res) => {
     try {
         const user = await User.find(req.params.username)
         if (user) {
@@ -131,12 +132,12 @@ app.put('/users/:username', async (req, res) => {
 
 /**Plant Related Server Calls */
 
-app.put('/plants', async (req, res) => {
+app.put('/api/plants', async (req, res) => {
     const { api_id, custom, name, notes } = req.body;
     const plant = await Plant.create(api_id, custom, name, notes);
     res.send(plant);
 })
-app.put('/plants/:username', async (req, res) => {
+app.put('/api/plants/:username', async (req, res) => {
     const attributes = req.body.attributes;
     const { username } = req.params;
     const { last_watered, water_rate, duration } = attributes
@@ -145,18 +146,18 @@ app.put('/plants/:username', async (req, res) => {
     res.send(user_plant);
 })
 
-app.get('/plants/:username', async (req, res) => {
+app.get('/api/plants/:username', async (req, res) => {
     const { username } = req.params;
     const connections = await Plant.findConnections(username);
     res.send(connections);
 });
-app.post('/getPlants', async (req, res) => {
+app.post('/api/getPlants', async (req, res) => {
     const plant_ids = req.body['plant_ids'];
     const plant = await Plant.findAll(plant_ids);
     res.send(plant);
 
 })
-app.delete('/plants/:username', async (req, res) => {
+app.delete('/api/plants/:username', async (req, res) => {
     const { username } = req.params;
     const { id } = req.body;
     console.log('id', id);
@@ -165,7 +166,7 @@ app.delete('/plants/:username', async (req, res) => {
     res.send(destruction);
 })
 
-app.post('/plants/:username', async (req, res) => {
+app.post('/api/plants/:username', async (req, res) => {
     try {
         const { username } = req.params;
         const { plant_id, timestamp } = req.body;
@@ -179,7 +180,7 @@ app.post('/plants/:username', async (req, res) => {
 
 /*Weather Related API CALLS */
 
-app.get('/weather/:zip', async (req, res) => {
+app.get('/api/weather/:zip', async (req, res) => {
     try {
         const result = await axios({
             method: 'get',
@@ -230,7 +231,7 @@ app.get('/weather/:zip', async (req, res) => {
 // })
 
 /**News Related Queries */
-app.get('/news/:filter', async (req, res) => {
+app.get('/api/news/:filter', async (req, res) => {
     try {
         console.log('news query was called')
         const result = await axios({

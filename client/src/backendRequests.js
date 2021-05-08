@@ -10,7 +10,7 @@ const SERVERURL = process.env.NODE_ENV === 'production' ? 'https://garden-guru-c
 export async function createUser(first, last, email, phone, username, password) {
         const result = await axios({
             method: 'post',
-            url: '/signup',
+            url: '/api/signup',
             data: {
                 first: first,
                 last: last,
@@ -26,7 +26,7 @@ export async function createUser(first, last, email, phone, username, password) 
 export const getUsers = async () => {
     const result = await axios({
         method: 'get',
-        url: '/users',
+        url: '/api/users',
     })
     return result;
 }
@@ -37,7 +37,7 @@ export const getUser = async (username, password) => {
     //console.log(password);
     const result = await axios({
         method: 'post',
-        url: `/login`,
+        url: `/api/login`,
         data: {
             username: username,
             password: password,
@@ -50,7 +50,7 @@ export const updateUserPreferences = async (username, password, preferences) => 
     const {zip, mode} = preferences;
     const result = await axios({
         method: 'put',
-        url: `/users/${username}`,
+        url: `/api/users/${username}`,
         data: {
             password: password,
             zip: zip,
@@ -78,7 +78,7 @@ export const getPlantByAPI = async (id) =>{
 export const getUserPlantConnections = async (username) => {
     const result = await axios({
         method:'get',
-        url: `/plants/${username}`
+        url: `/api/plants/${username}`
     })
     return result;
 }
@@ -86,7 +86,7 @@ export const getUserPlantConnections = async (username) => {
 export const getUserPlants = async (plantIds) =>{
     const result = await axios({
         method:'post',
-        url: `/getPlants`,
+        url: `/api/getPlants`,
         data: {
             plant_ids: plantIds,
         }
@@ -97,7 +97,7 @@ export const getUserPlants = async (plantIds) =>{
 export const createPlantConnection = async (username, attributes) => {
     const result = await axios({
         method: 'put',
-        url: `/plants/${username}`,
+        url: `/api/plants/${username}`,
         data: {
             attributes: attributes,
         }
@@ -107,7 +107,7 @@ export const createPlantConnection = async (username, attributes) => {
 export const deleteUserPlant = async (username, id) => {
     const result = await axios({
         method: 'delete',
-        url: `/plants/${username}`,
+        url: `/api/plants/${username}`,
         data: {
             id: id,
         }
@@ -118,7 +118,7 @@ export const deleteUserPlant = async (username, id) => {
 export const updatePlantConnection = async (username, plantId, timestamp) =>{
     const result = await axios({
         method: 'post',
-        url: `/plants/${username}`,
+        url: `/api/plants/${username}`,
         data: {
             plant_id: plantId,
             timestamp: timestamp,
@@ -133,7 +133,7 @@ export const getWeather = async (zip) => {
     // }
     const result = await axios({
         method: 'get',
-        url: `/weather/${zip}`,
+        url: `/api/weather/${zip}`,
     })
     return result;
 }
@@ -150,7 +150,7 @@ export const getWeather = async (zip) => {
 export const getNews = async(query) => {
     const result = await axios({
         method: 'get',
-        url: `/news/${query}`
+        url: `/api/news/${query}`
     });
 
     return result;
