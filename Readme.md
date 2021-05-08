@@ -2,6 +2,8 @@
 
  Used Heroku To host my backend with Postgres SQL database (complete with users/passwords and plant connections) 
  
+ Passwords encrypted with bcrypt node module. 
+ 
  Also use Heroku to host Front End
  
  React Framework
