@@ -1,8 +1,11 @@
 const axios = require('axios');
 require('dotenv').config();
 const parse = require('postgres-date');
-const SERVERURL = `http://localhost:${process.env.PORT || 8000}`
+//const SERVERURL = `http://localhost:${process.env.PORT || 8000}`
 
+const SERVERURL = process.env.NODE_ENV === 'production' ? 'https://garden-guru-comp246.herokuapp.com/api' : 'http://localhost:8000';
+
+console.log(window.location.origin);
 
 export async function createUser(first, last, email, phone, username, password) {
         const result = await axios({
@@ -152,4 +155,3 @@ export const getNews = async(query) => {
 
     return result;
 }
-
