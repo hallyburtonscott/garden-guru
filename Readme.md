@@ -22,7 +22,7 @@
  
  client/src contains all front end files. 
  
- user.js and plant.js are ORM's for index.js 
+ user.js and plant.js are helpers for index.js 
  
  
  
