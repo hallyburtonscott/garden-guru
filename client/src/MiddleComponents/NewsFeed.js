@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 const NewsFeed = (props) => {
     const [search, setSearch] = useState('');
 
-    const [news, setNews] = useState(prev => {
+    const [news, setNews] = useState(() => {
         if (sessionStorage.getItem('news')) {
             return JSON.parse(sessionStorage.getItem('news')).articles
         } else
@@ -37,7 +37,7 @@ const NewsFeed = (props) => {
                 Gardening News
             </Typography>
             <Grid container spacing={2}>
-                {news.length > 0 && news.map(article => {
+                {news && news.length > 0 && news.map(article => {
                     return (
                         <Grid item key={article.publishedAt}>
                             <NewsArticle key={article.publishedAt} article={article}/>
@@ -49,8 +49,10 @@ const NewsFeed = (props) => {
             <Button variant='contained' onClick={() => {
                 getNews('gardening').then(res => {
                     if (res) {
-                        setNews(res.data.articles);
-                        sessionStorage.setItem('news', JSON.stringify(res.data))
+                        if(res.data){
+                            setNews(res.data.articles);
+                            sessionStorage.setItem('news', JSON.stringify(res.data))
+                        }
                     }
                 })
             }}>Search! </Button>

@@ -237,7 +237,7 @@ app.get('/api/weather/:zip', async (req, res) => {
 /**News Related Queries */
 app.get('/api/news/:filter', async (req, res) => {
     try {
-        //console.log('news query was called')
+        console.log('news query was called')
         const result = await axios({
             method: 'get',
             url: `https://newsapi.org/v2/everything`,
@@ -248,7 +248,8 @@ app.get('/api/news/:filter', async (req, res) => {
                 "Authorization": `Bearer ${process.env.NEWS_API}`
             }
         })
-        res.send(result.data);
+        res.json(result.data);
+        //res.sendStatus(404).send('not found');
     } catch (e) {
         //console.log(e.message);
         res.status(404);
