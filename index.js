@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const app = express();
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const bcrypt = require('bcrypt')
@@ -17,7 +18,11 @@ app.use(bodyParser.json());
 const User = require('./user.js');
 const Plant = require('./plant.js');
 
+app.use(express.static(path.join(__dirname, 'client/build')));
+
 User.initialize();
+
+
 /**User related Server Calls */
 app.get('/', function (req, res) {
     console.log("GET request for homepage");
