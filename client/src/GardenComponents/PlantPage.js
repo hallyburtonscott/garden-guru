@@ -36,7 +36,7 @@ const PlantPage = ({id, clear}) => {
 
     const classes = useStyles();
     const [plant, setPlant] = useState(null);
-    console.log(id);
+    //console.log(id);
     useEffect(() => {
         getUserPlants([id]).then(result => {
             if (result.data[0] != null) {

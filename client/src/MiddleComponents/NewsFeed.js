@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
         padding: 50
     },
     newHeader:{
-        backgroundColor: theme.palette.secondary[200],
+        backgroundColor: theme.palette.secondary[400],
         marginBottom: 15,
     }
 }))

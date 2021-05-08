@@ -72,7 +72,7 @@ const UserInfo = ({onSuccess}) => {
                                     //console.log('got here');
                                     const user = await getUser(preferences.username, password);
                                     setMessage('success!');
-                                    console.log(user.data['zip']);
+                                    //console.log(user.data['zip']);
                                     onSuccess(
                                         {
                                             loggedIn: 'true',
@@ -84,7 +84,7 @@ const UserInfo = ({onSuccess}) => {
                                     //console.log(user);
                                 } catch (e) {
                                     setMessage('This password is incorrect');
-                                    console.log(e);
+                                    //console.log(e);
                                 }
                                 //window.location.reload();
                             }

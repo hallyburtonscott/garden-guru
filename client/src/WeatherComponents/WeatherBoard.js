@@ -17,13 +17,13 @@ const useStyles = makeStyles((theme) => ({
     },
     weatherHeader: {
         padding: 10,
-        backgroundColor: theme.palette.secondary[200],
+        backgroundColor: theme.palette.secondary[400],
     },
     weatherBody: {
         padding: 10,
     },
     notFound: {
-        backgroundColor: theme.palette.secondary[200],
+        backgroundColor: theme.palette.secondary[400],
     }
 
 }));
@@ -33,9 +33,9 @@ const WeatherBoard = () => {
     useEffect(() => {
             getWeather(preferences['zip']).then(res => {
                 setWeather(res.data);
-                console.log(res.data);
+                //console.log(res.data);
             })
-       console.log('useEffect')
+       //console.log('useEffect')
 
     }, []);
     const classes = useStyles();

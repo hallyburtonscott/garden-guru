@@ -23,9 +23,9 @@ const LoginCard = ({onSuccess}) => {
 
         getUser(nameInput, passwordInput).then(result => {
                 //localStorage.setItem('test', 'hello');
-                console.log(result);
+                //console.log(result);
                 setMessage('success! Logging you in');
-                console.log(result.data);
+                //console.log(result.data);
                 onSuccess(
                     {
                         loggedIn: 'true',

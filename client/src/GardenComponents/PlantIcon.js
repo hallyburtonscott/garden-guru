@@ -27,9 +27,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 function PlantIcon({plant, info, plantClick, infoClick, handleRemove}) {
-    //console.log(plant);
+    ////console.log(plant);
     let {path, url} = useRouteMatch();
-    //console.log(url);
+    ////console.log(url);
     const classes = useStyles();
     const {last_watered, water_rate} = info;
     const time = parseInt(last_watered);

@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.primary[400],
     },
     news: {
-        overflow: 'scroll',
+        overflowY: 'auto',
+        
     },
     loginRequest: {
         maxHeight: 300,
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     },
     notifications: {
         maxHeight: 500,
-        overflow: 'scroll',
+        overflow: 'auto',
     },
 
 
@@ -131,7 +132,7 @@ const Home = ({}) => {
                     <div className={classes.toolBar}>
                         {(preferences.loggedIn ? <div className={classes.weatherBoard}> <WeatherBoard/></div> : <LoginRequest/>)}
                         <div className={!classes.notifications}>
-                            <Notifications />
+                           {preferences.loggedIn && <Notifications />}
                         </div>
 
                     </div>

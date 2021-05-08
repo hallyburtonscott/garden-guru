@@ -7,7 +7,8 @@ import {
     CardHeader,
     CardMedia,
     makeStyles,
-    TextField
+    TextField,
+    Tooltip
 } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
@@ -30,7 +31,8 @@ const useStyles = makeStyles((theme) => {
             backgroundColor: theme.palette.primary[300],
         },
         plantDescription: {
-
+            height: 74,
+            overflow: 'auto',
         }
 
 
@@ -42,7 +44,7 @@ const PlantCard = ({plant, notifyUpdate}) => {
     const preferences = useContext(UserContext);
     const [schedule, setSchedule] = useState(24);
     const createConnection = () => {
-        console.log(plant);
+        ////console.log(plant);
         const attributes = {
             api_id: plant.id,
             custom: true,
@@ -76,16 +78,17 @@ const PlantCard = ({plant, notifyUpdate}) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <IconButton aria-label='mark favorite'>
+                {/* <IconButton aria-label='mark favorite'>
                     <FavoriteIcon/>
-                </IconButton>
+                </IconButton> */}
+               
                 {(preferences.loggedIn == 'true') && <IconButton onClick={createConnection}>
-                    <AddIcon/>
+                <Tooltip title='Add to Garden' children={<AddIcon/>}/> 
                 </IconButton>}
 
-                <IconButton>
+                {/* <IconButton>
                     <Info/>
-                </IconButton>
+                </IconButton> */}
                 <Typography>
                     Water every <TextField value ={schedule} onChange={(e)=> setSchedule(e.target.value)}/> Hours
                 </Typography>

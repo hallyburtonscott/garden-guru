@@ -52,7 +52,7 @@ app.get('/api/user', async (req, res) => {
         res.json(userInfo)
     }
     catch (e) {
-        console.log(e);
+        //console.log(e);
     }
 })
 
@@ -68,7 +68,7 @@ app.post('/api/login', async (req, res) => {
             const authenticated = await bcrypt.compare(password, user['password']);
             // console.log(authenticated);
             if (authenticated) {
-                console.log('why are we here?')
+                //console.log('why are we here?')
                 const currentUser = {
                     username: user['username'],
                     zip: user['zip'],
@@ -98,7 +98,7 @@ app.post('/api/signup', async (req, res) => {
         //console.log(req.body);
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create(first, last, email, phone, username, hashedPassword);
-        console.log(user);
+        //console.log(user);
         if (user.status == 'success') {
             res.send(user)
         } else if (user.code == '23505') {
@@ -107,7 +107,7 @@ app.post('/api/signup', async (req, res) => {
             res.status(500).send('A server error has occured');
         }
     } catch (e) {
-        console.log(e);
+        //console.log(e);
         res.send(e);
     }
 })
@@ -120,7 +120,7 @@ app.put('/api/users/:username', async (req, res) => {
             // console.log(authenticated);
             //console.log(authenticated);
             if (authenticated) {
-                console.log('authenticated', authenticated);
+                //console.log('authenticated', authenticated);
                 const result = User.update(req.params.username, { zip: req.body.zip, mode: req.body.mode});
                 res.sendStatus(200);
             }else{
@@ -164,8 +164,8 @@ app.post('/api/getPlants', async (req, res) => {
 app.delete('/api/plants/:username', async (req, res) => {
     const { username } = req.params;
     const { id } = req.body;
-    console.log('id', id);
-    console.log('username', username);
+    //console.log('id', id);
+    //console.log('username', username);
     const destruction = await Plant.destroyConnection(username, id);
     res.send(destruction);
 })
@@ -197,7 +197,7 @@ app.get('/api/weather/:zip', async (req, res) => {
         })
         res.json(result.data);
     } catch (e) {
-        console.log(e);
+        //console.log(e);
     }
 
 })
@@ -237,7 +237,7 @@ app.get('/api/weather/:zip', async (req, res) => {
 /**News Related Queries */
 app.get('/api/news/:filter', async (req, res) => {
     try {
-        console.log('news query was called')
+        //console.log('news query was called')
         const result = await axios({
             method: 'get',
             url: `https://newsapi.org/v2/everything`,
