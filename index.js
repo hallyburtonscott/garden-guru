@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 const User = require('./user.js');
 const Plant = require('./plant.js');
 
-
+User.initialize();
 /**User related Server Calls */
 app.get('/', function (req, res) {
     console.log("GET request for homepage");
@@ -44,22 +44,30 @@ app.get('/user', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         //console.log(req.params);
+        //console.log('the login worked???');
         const { username, password } = req.body;
         const user = await User.find(username);
-        console.log('user', user);
+        //console.log('user', user);
         if (user) {
-            const authenticated = bcrypt.compare(password, user['password']);
+            const authenticated = await bcrypt.compare(password, user['password']);
+            // console.log(authenticated);
             if (authenticated) {
+                console.log('why are we here?')
                 const currentUser = {
                     username: user['username'],
+                    zip: user['zip'],
+                    mode: user['mode'],
                 }
                 const accessToken = jwt.sign(currentUser, process.env.AUTH_TOKEN_SECRET);
                 //res.json({ accessToken: accessToken, username: username });
-                res.json({ username: user['username'] });
+                res.json(currentUser);
+            } else {
+                res.status(404).send('Could not find username with that password');
             }
         }
     }
     catch (e) {
+        console.log(e);
         res.status(404).send('Could not find username with that password');
     }
 
@@ -68,7 +76,7 @@ app.post('/login', async (req, res) => {
 app.post('/signup', async (req, res) => {
     try {
         const { first, last, email, phone, username, password } = req.body;
-        console.log(req.body);
+        //console.log(req.body);
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create(first, last, email, phone, username, hashedPassword);
         console.log(user);
@@ -85,27 +93,41 @@ app.post('/signup', async (req, res) => {
     }
 })
 
-app.put('/users', (req, res) => {
-    User.update(req.body.username, req.body.password, { zip: req.body.zip }).then(result => {
-        {
-            res.send(result);
+app.put('/users/:username', async (req, res) => {
+    try {
+        const user = await User.find(req.params.username)
+        if (user) {
+            const authenticated = await bcrypt.compare(req.body.password, user['password']);
+            // console.log(authenticated);
+            //console.log(authenticated);
+            if (authenticated) {
+                console.log('authenticated', authenticated);
+                const result = User.update(req.params.username, { zip: req.body.zip, mode: req.body.mode});
+                res.sendStatus(200);
+            }else{
+                res.send('unable to complete action')
+            }
         }
-    })
+    } catch (e) {
+        res.status(404).send('unable to perform action')
+    }
 
 })
 
 
 /**Plant Related Server Calls */
 
-app.post('/plants', async (req, res) => {
+app.put('/plants', async (req, res) => {
     const { api_id, custom, name, notes } = req.body;
     const plant = await Plant.create(api_id, custom, name, notes);
     res.send(plant);
 })
-app.post('/plants/:username', async (req, res) => {
-    const { api_id, name, custom, water_rate } = req.body;
+app.put('/plants/:username', async (req, res) => {
+    const attributes = req.body.attributes;
     const { username } = req.params;
-    const user_plant = await Plant.createConnection(username, api_id, name, custom, water_rate);
+    const { last_watered, water_rate, duration } = attributes
+    const plant_id = await Plant.create(attributes);
+    const user_plant = await Plant.createConnection(username, plant_id['plant_id'], last_watered, water_rate, duration);
     res.send(user_plant);
 })
 
@@ -118,6 +140,26 @@ app.post('/getPlants', async (req, res) => {
     const plant_ids = req.body['plant_ids'];
     const plant = await Plant.findAll(plant_ids);
     res.send(plant);
+
+})
+app.delete('/plants/:username', async (req, res) => {
+    const { username } = req.params;
+    const { id } = req.body;
+    console.log('id', id);
+    console.log('username', username);
+    const destruction = await Plant.destroyConnection(username, id);
+    res.send(destruction);
+})
+
+app.post('/plants/:username', async (req, res) => {
+    try {
+        const { username } = req.params;
+        const { plant_id, timestamp } = req.body;
+        await Plant.update(username, plant_id, timestamp);
+        res.sendStatus(200);
+    } catch (e) {
+        res.sendStatus(500);
+    }
 
 })
 
@@ -176,6 +218,7 @@ app.get('/weather/:zip', async (req, res) => {
 /**News Related Queries */
 app.get('/news/:filter', async (req, res) => {
     try {
+        console.log('news query was called')
         const result = await axios({
             method: 'get',
             url: `https://newsapi.org/v2/everything`,
@@ -183,12 +226,12 @@ app.get('/news/:filter', async (req, res) => {
                 q: req.params.filter,
             },
             headers: {
-                "Authorization": `Bearer ${process.env.NEW_API}`
+                "Authorization": `Bearer ${process.env.NEWS_API}`
             }
         })
         res.send(result.data);
     } catch (e) {
-        console.log(e.message);
+        //console.log(e.message);
         res.status(404);
     }
 })

@@ -19,33 +19,55 @@ const db = new Pool({
 });
 
 console.log(process.env.DATABASE_URL);
-User.initialize = function () {
-    db.connect();
-    db.query(`CREATE TABLE IF NOT EXISTS users (
-    user_id serial PRIMARY KEY, 
-    username VARCHAR (50) UNIQUE NOT NULL,
-    password VARCHAR (50) NOT NULL, 
-    email VARCHAR (250) UNIQUE NOT NULL, 
-    phone VARCHAR (50) UNIQUE,
-    last_login TIMESTAMP, 
-    created TIMESTAMP);`, (err, res) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(res); 87
-        }
-    })
-    db.end();
+User.initialize = async function () {
+    try{
+        await db.connect();
+        const step1 = await db.query(`CREATE TABLE IF NOT EXISTS users (
+        user_id serial PRIMARY KEY, 
+        username VARCHAR (50) UNIQUE NOT NULL,
+        password VARCHAR (250) NOT NULL, 
+        email VARCHAR (250) UNIQUE NOT NULL, 
+        phone VARCHAR (50) ,
+        zip VARCHAR(50),
+        first VARCHAR(50),
+        last VARCHAR(50),
+        mode VARCHAR(50));`); 
+        
+        const step2 = await db.query(`CREATE TABLE IF NOT EXISTS plants (
+            plant_id serial PRIMARY KEY, 
+            api_id VARCHAR(50),
+            custom BOOLEAN, 
+            name VARCHAR(50),
+            notes VARCHAR(8000),
+            attributes VARCHAR(8000)
+        );`);
+    
+        const step3 = await db.query(`CREATE TABLE IF NOT EXISTS user_plant (
+            user_id integer NOT NULL, 
+            plant_id integer NOT NULL, 
+            last_watered VARCHAR(250),
+            duration real,
+            water_rate real,
+            created VARCHAR(250),
+            PRIMARY KEY (user_id, plant_id),
+            FOREIGN KEY (plant_id) REFERENCES plants(plant_id) ON UPDATE CASCADE,
+            FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE
+    
+        );`);
+    }catch(e){
+        console.log(e);
+    }
+    
 }
 
 User.find = async function (username) {
     let user;
     try {
         const res = await db.query(`SElECT * FROM users WHERE username=$1;`, [username]);
-        console.log('result', res);
+        //console.log('result', res);
         if (res.rows != null) {
             user = res.rows[0];
-            console.log(user);
+            //console.log(user);
         }
         return user;
     } catch (err) {
@@ -63,12 +85,14 @@ User.findAll = async function () {
 User.create = async function (first, last, email, phone, username, password) {
        try{
         const res = await db.query(`INSERT INTO users (first, last, email, phone, username, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING user_id`, [first, last, email, phone, username, password]);
+        console.log('result', res);
         if(res.rows){
             return {
                 status: 'success',
                 data: res.rows[0],
             } 
         }else{
+            console.log('result', res);
             return {}
         }
        }catch(err){
@@ -81,15 +105,19 @@ User.create = async function (first, last, email, phone, username, password) {
 
 }
 
-User.update = async function (username, password, operations) {
-    const authenticate = await db.query(`SElECT * FROM users WHERE username=$1 AND password=$2;`, [username, password]);
-    console.log('authentication status', authenticate.rows);
-    if (authenticate.rows.length == 0) {
-        return null;
-    } else {
-        const res = await db.query(`UPDATE users SET zip = $1 WHERE username = $2`, [operations.zip, username]);
-        return res;
-    }
+User.update = async function (username, operations) {
+
+    //const authenticate = await db.query(`SElECT * FROM users WHERE username=$1 AND password=$2;`, [username, password]);
+    //console.log('authentication status', authenticate.rows);
+        if(operations.zip){
+            const res = await db.query(`UPDATE users SET zip = $1 WHERE username = $2`, [operations.zip, username]);
+        }
+        if(operations.mode){
+            const res = await db.query(`UPDATE users SET mode = $1 WHERE username = $2`, [operations.mode, username]);
+        }
+       
+       
+    
 
 }
 

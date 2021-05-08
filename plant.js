@@ -11,31 +11,31 @@ const db = new Pool({
     connectionString: process.env.DATABASE_URL,
 });
 
-Plant.initialize = function () {
-    db.connect();
-    db.query(`CREATE TABLE IF NOT EXISTS plants (
-    Plant_id serial PRIMARY KEY, 
-    api_id int,
-    custum boolean,
-    name varchar(50),
-    notes varchar(50);`, (err, res) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(res); 
-        }
-    })
-    db.end();
-}
+// Plant.initialize = function () {
+//     db.connect();
+//     db.query(`CREATE TABLE IF NOT EXISTS plants (
+//     Plant_id serial PRIMARY KEY, 
+//     api_id int,
+//     custum boolean,
+//     name varchar(50),
+//     notes varchar(50);`, (err, res) => {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             console.log(res); 
+//         }
+//     })
+//     db.end();
+// }
 
 Plant.findConnections = async function (username) {
     let plant;
     try {
-        const res = await db.query(`SElECT plant_id FROM user_plant WHERE user_id=(Select user_id from users where username=$1);`, [username]);
-        console.log('result', res);
+        const res = await db.query(`SElECT * FROM user_plant WHERE user_id=(Select user_id from users where username=$1 );`, [username]);
+        //console.log('result', res);
         if (res.rows != null) {
             plant = res.rows;
-            console.log(plant);
+            //console.log(plant);
         }
         return plant;
     } catch (err) {
@@ -63,58 +63,48 @@ Plant.findAll = async function (plant_ids) {
 
 
 
-Plant.createConnection = async function(username, api_id, name, custom, water_rate){
+Plant.createConnection = async function(username, plant_id, last_watered, water_rate, duration){
     try{
-    let res; 
-    if(custom == 'false'){
-        res = await db.query(`insert into user_plant (user_id, plant_id, water_rate) values
-    ((select user_id from users where username=$1), (select plant_id from plants where api_id=$2), $3);`, [username, api_id, water_rate]); 
-    }else{
-        res = await db.query(`insert into user_plant (user_id, plant_id, water_rate) values
-    ((select user_id from users where username=$1), (select plant_id from plants where name=$2), $3);`, [username, name, water_rate]); 
-    }
-    console.log(res);
-    return ({
-        status: 'success!'
-    });
+       const  res = await db.query(`insert into user_plant (user_id, plant_id, water_rate, last_watered, duration, created) values
+    ((select user_id from users where username=$1), $2, $3, $4, $5, $6) Returning plant_id;`, [username, plant_id, water_rate, last_watered, duration, Date.now()]); 
+    //console.log(res);
+    return res.rows; 
 }catch (e){
-    return ({
-        status: 'failure ',
-        error: e,
-    });
+    console.log(e);
+    return ``;
 }
     
 }
-Plant.create = async function (api_id =0, custom=false, name, notes) {
+Plant.create = async function (attributes = {
+    api_id:0,
+    custom:true,
+    name:'You did not put a name', 
+    notes: ``,
+}) {
        try{
+        const {api_id, custom, name, notes} = attributes;
         const res = await db.query(`INSERT INTO Plants (api_id, custom, name, notes) VALUES ($1, $2, $3, $4) RETURNING Plant_id`, [api_id, custom, name, notes]);
         if(res.rows){
-            return {
-                status: 'success',
-                data: res.rows[0],
-            } 
-        }else{
-            return {}
+            return res.rows[0];
         }
        }catch(err){
-            return {
-                status: 'failure',
-                code: err.code,
-            };
+           //console.log('an error occured, probably uniqueness');
+            return ``;
        }
         
 
 }
-
-Plant.update = async function (Plantname, password, operations) {
-    const authenticate = await db.query(`SElECT * FROM Plants WHERE Plantname=$1 AND password=$2;`, [Plantname, password]);
-    console.log('authentication status', authenticate.rows);
-    if (authenticate.rows.length == 0) {
-        return null;
-    } else {
-        const res = await db.query(`UPDATE Plants SET zip = $1 WHERE Plantname = $2`, [operations.zip, Plantname]);
-        return res;
-    }
+Plant.destroyConnection = async function (username, id){
+    console.log(username, id)
+    const res = await db.query(`DELETE FROM user_plant WHERE user_id =(SELECT user_id FROM users where username=$1) AND plant_id=$2`, [username, id]);
+    console.log('Destruction', res);
+    return res; 
+}
+Plant.update = async function (user_id, plant_id, timestamp) {
+   
+    const res = await db.query(`UPDATE user_plant Set last_watered = $1 where (plant_id=$2 AND user_id=(Select user_id from users where username=$3));`, [timestamp, plant_id, user_id ]);
+    return res;
+    
 
 }
 
