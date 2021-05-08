@@ -31,6 +31,7 @@ const LoginCard = ({onSuccess}) => {
                         loggedIn: 'true',
                         username: result.data.username,
                         zip: result.data['zip'],
+                        mode: result.data.mode,
                     });
             }
         ).catch(e => {

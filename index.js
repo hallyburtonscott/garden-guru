@@ -22,6 +22,7 @@ const Plant = require('./plant.js');
 app.use(express.static(path.join(__dirname, 'client/build')));
 if (process.env.NODE_ENV === 'production') {
 	//app.use(express.static('client/build'));
+    //Got the solution /^((?!(api)).)*$/ from https://stackoverflow.com/questions/62231197/my-crud-app-works-locally-but-not-on-heroku
     app.get(/^((?!(api)).)*$/, (request, response) => {
         response.sendFile(path.join(__dirname, 'client/build', 'index.html'));
     });
